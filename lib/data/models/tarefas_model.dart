@@ -2,7 +2,7 @@ class Tarefa {
   int? id; // ID da tarefa (opcional, usado para identificar a tarefa no banco)
   String nome; // Nome da tarefa (obrigatório)
   String? descricao; // Descrição da tarefa (opcional)
-  String status; // Status da tarefa (opcional, ex.: "pendente", "concluído")
+  String? status; // Status da tarefa (opcional, ex.: "pendente", "concluído")
   String dataInicio; // Data de início da tarefa (opcional)
   String dataFim; // Data de término da tarefa (opcional)
 
@@ -11,7 +11,7 @@ class Tarefa {
     this.id,
     required this.nome,
     this.descricao,
-    required this.status,
+    this.status,
     required this.dataInicio,
     required this.dataFim,
   });

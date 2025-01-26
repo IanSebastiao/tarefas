@@ -22,7 +22,7 @@ class TarefasRepository {
         id: map['id'] as int?,
         nome: map['nome'] as String,
         descricao: map['descricao'] as String?,
-        status: map['status'] as String,
+        status: map['status'] as String?,
         dataInicio: map['data_inicio'] as String,
         dataFim: map['data_fim'] as String,
       );

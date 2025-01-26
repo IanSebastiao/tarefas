@@ -27,8 +27,25 @@ class _TarefasPagesState extends State<TarefasPages> {
 
   Future<void> _loadTarefa() async {
     _tarefa = await _viewModel.getTarefas();
+    _updateTarefaStatus();
     if (mounted) {
       setState(() {});
+    }
+  }
+
+  void _updateTarefaStatus() {
+    final now = DateTime.now();
+    for (var tarefa in _tarefa) {
+      final dataInicio = DateTime.parse(tarefa.dataInicio);
+      final dataFim = DateTime.parse(tarefa.dataFim);
+
+      if (dataInicio.isAfter(now)) {
+        tarefa.status = 'Pendente';
+      } else if (dataInicio.isAtSameMomentAs(now) || (dataInicio.isBefore(now) && dataFim.isAfter(now))) {
+        tarefa.status = 'Em andamento';
+      } else if (dataFim.isBefore(now)) {
+        tarefa.status = 'Concluído';
+      }
     }
   }
 
@@ -92,7 +109,7 @@ class _TarefasPagesState extends State<TarefasPages> {
         title: const Text('Lista de Tarefas'),
         backgroundColor: const Color.fromARGB(255, 0, 65, 150),
         leading: IconButton(
-          icon: const Icon(Icons.home),
+          icon: const Icon(Icons.arrow_back_sharp),
           onPressed: () {
             Navigator.pushReplacement(
               context,

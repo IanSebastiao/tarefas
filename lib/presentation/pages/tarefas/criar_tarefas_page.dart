@@ -15,7 +15,6 @@ class _CriarTarefasPageState extends State<CriarTarefasPage> {
   final _formKey = GlobalKey<FormState>();
   final nomeController = TextEditingController();
   final descricaoController = TextEditingController();
-  final statusController = TextEditingController();
   final dataInicioController = TextEditingController();
   final dataFimController = TextEditingController();
   final TarefaViewModel _viewModel = TarefaViewModel(TarefasRepository());
@@ -25,7 +24,6 @@ class _CriarTarefasPageState extends State<CriarTarefasPage> {
       final tarefa = Tarefa(
         nome: nomeController.text,
         descricao: descricaoController.text,
-        status: statusController.text,
         dataInicio: dataInicioController.text,
         dataFim: dataFimController.text,
       );
@@ -33,7 +31,7 @@ class _CriarTarefasPageState extends State<CriarTarefasPage> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Tarefa Adicionada com sucesso!')),
+          const SnackBar(content: Text('Tarefa adicionada com sucesso!')),
         );
         Navigator.pushReplacement(
           context,
@@ -107,37 +105,6 @@ class _CriarTarefasPageState extends State<CriarTarefasPage> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      DropdownButtonFormField<String>(
-                        value: statusController.text.isEmpty
-                            ? null
-                            : statusController.text,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            statusController.text = newValue!;
-                          });
-                        },
-                        items: <String>[
-                          'Pendente',
-                          'Em andamento',
-                          'Concluído'
-                        ].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        decoration: const InputDecoration(
-                          labelText: 'Status',
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor selecione o status';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
                       TextFormField(
                         controller: dataInicioController,
                         readOnly: true,
@@ -183,8 +150,11 @@ class _CriarTarefasPageState extends State<CriarTarefasPage> {
                           ),
                           foregroundColor: Colors.black, // Cor do ícone e texto
                         ),
-                        icon: const Icon(Icons.save, size: 24,
-                        color: Colors.black,),
+                        icon: const Icon(
+                          Icons.save,
+                          size: 24,
+                          color: Colors.black,
+                        ),
                         label: const Text(
                           'Salvar',
                           style: TextStyle(fontSize: 18),

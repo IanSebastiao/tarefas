@@ -1,7 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tarefas/presentation/pages/tarefas/criar_tarefas_page.dart';
 import 'package:tarefas/presentation/pages/tarefas/tarefas_pages.dart';
 import 'main_home_page.dart';
+
+void main() {
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ThemeProvider(),
+      child: MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
+    return MaterialApp(
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: themeProvider.themeMode, // Aplica o tema dinâmico
+      home: const HomePage(),
+    );
+  }
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,17 +52,19 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Gerenciamento de Tarefas'),
-        backgroundColor: Color.fromARGB(255, 0, 65, 150),
+        backgroundColor: const Color.fromARGB(255, 0, 65, 150),
       ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromARGB(255, 0, 65, 150),
               ),
               child: const Column(
@@ -89,17 +115,20 @@ class HomePageState extends State<HomePage> {
                 Navigator.pop(context);
               },
             ),
-            // const Divider(),
-            // ListTile(
-            //   leading: const Icon(Icons.exit_to_app, color: Colors.red),
-            //   title: const Text('Sair'),
-            //   onTap: () {
-            //     Navigator.pushReplacement(
-            //       context,
-            //       MaterialPageRoute(builder: (context) => const LoginPage()),
-            //     );
-            //   },
-            // ),
+            const Divider(),
+            ListTile(
+              leading: Icon(
+                themeProvider.isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                color: const Color.fromARGB(255, 0, 65, 150),
+              ),
+              title: Text(themeProvider.isDarkMode
+                  ? 'Ativar Tema Claro'
+                  : 'Ativar Tema Escuro'),
+              onTap: () {
+                themeProvider.toggleTheme();
+                Navigator.pop(context);
+              },
+            ),
           ],
         ),
       ),
@@ -120,9 +149,22 @@ class HomePageState extends State<HomePage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Color.fromARGB(255, 0, 65, 150),
+        selectedItemColor: const Color.fromARGB(255, 0, 65, 150),
         onTap: _onItemTapped,
       ),
     );
+  }
+}
+
+class ThemeProvider extends ChangeNotifier {
+  ThemeMode _themeMode = ThemeMode.light;
+
+  ThemeMode get themeMode => _themeMode;
+
+  bool get isDarkMode => _themeMode == ThemeMode.dark;
+
+  void toggleTheme() {
+    _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    notifyListeners(); // Notifica que o estado foi alterado
   }
 }

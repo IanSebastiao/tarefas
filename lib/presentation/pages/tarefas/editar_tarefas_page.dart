@@ -17,7 +17,6 @@ class _EditarTarefasPageState extends State<EditarTarefasPage> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController nomeController;
   late TextEditingController descricaoController;
-  late TextEditingController statusController;
   late TextEditingController dataInicioController;
   late TextEditingController dataFimController;
   final TarefaViewModel _viewModel = TarefaViewModel(TarefasRepository());
@@ -28,7 +27,6 @@ class _EditarTarefasPageState extends State<EditarTarefasPage> {
     // Inicializa os controladores com os dados da tarefa
     nomeController = TextEditingController(text: widget.tarefa.nome);
     descricaoController = TextEditingController(text: widget.tarefa.descricao);
-    statusController = TextEditingController(text: widget.tarefa.status);
     dataInicioController = TextEditingController(text: widget.tarefa.dataInicio);
     dataFimController = TextEditingController(text: widget.tarefa.dataFim);
   }
@@ -39,7 +37,7 @@ class _EditarTarefasPageState extends State<EditarTarefasPage> {
         id: widget.tarefa.id, // Mantém o id da tarefa original
         nome: nomeController.text,
         descricao: descricaoController.text,
-        status: statusController.text,
+        status: widget.tarefa.status, // Mantém o status atual da tarefa
         dataInicio: dataInicioController.text,
         dataFim: dataFimController.text,
       );
@@ -128,36 +126,7 @@ class _EditarTarefasPageState extends State<EditarTarefasPage> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      DropdownButtonFormField<String>(
-                        value: statusController.text.isEmpty
-                            ? null
-                            : statusController.text,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            statusController.text = newValue!;
-                          });
-                        },
-                        items: <String>[
-                          'Pendente',
-                          'Em andamento',
-                          'Concluído'
-                        ].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        decoration: const InputDecoration(
-                          labelText: 'Status',
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Por favor selecione o status';
-                          }
-                          return null;
-                        },
-                      ),
+                      // O Dropdown do status foi removido
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: dataInicioController,
