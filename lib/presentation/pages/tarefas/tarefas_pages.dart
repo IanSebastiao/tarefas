@@ -28,6 +28,7 @@ class _TarefasPagesState extends State<TarefasPages> {
   Future<void> _loadTarefa() async {
     _tarefa = await _viewModel.getTarefas();
     _updateTarefaStatus();
+    _sortTarefasByStatusAndName(); // Ordena as tarefas pela ordem de status e nome
     if (mounted) {
       setState(() {});
     }
@@ -47,6 +48,23 @@ class _TarefasPagesState extends State<TarefasPages> {
         tarefa.status = 'Concluído';
       }
     }
+  }
+
+  // Função para ordenar as tarefas pela ordem: Pendente, Em andamento, Concluído, e depois por nome alfabeticamente
+  void _sortTarefasByStatusAndName() {
+    setState(() {
+      _tarefa.sort((a, b) {
+        // A ordem desejada é "Pendente", "Em andamento", "Concluído"
+        List<String> statusOrder = ['Pendente', 'Em andamento', 'Concluído'];
+        // Primeiro ordena pelo status
+        int statusComparison = statusOrder.indexOf(a.status!).compareTo(statusOrder.indexOf(b.status!));
+        // Se o status for igual, ordena pelo nome alfabeticamente
+        if (statusComparison != 0) {
+          return statusComparison;
+        }
+        return a.nome.compareTo(b.nome); // Ordenação alfabética
+      });
+    });
   }
 
   Future<void> _deleteTarefa(Tarefa tarefa) async {
@@ -92,13 +110,12 @@ class _TarefasPagesState extends State<TarefasPages> {
     }
   }
 
-  // Função para formatar a data
   String formatDate(String date) {
     try {
       final parsedDate = DateTime.parse(date);
-      return DateFormat('dd/MM/yyyy').format(parsedDate); // Formato brasileiro
+      return DateFormat('dd/MM/yyyy').format(parsedDate);
     } catch (e) {
-      return date; // Retorna a data original caso haja erro de formatação
+      return date;
     }
   }
 
@@ -153,12 +170,12 @@ class _TarefasPagesState extends State<TarefasPages> {
                           Text('Descrição: ${tarefa.descricao}'),
                           const SizedBox(height: 4),
                           Text(
-                            'Data Início: ${formatDate(tarefa.dataInicio)}', // Usando o formato brasileiro
+                            'Data Início: ${formatDate(tarefa.dataInicio)}',
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Data Fim: ${formatDate(tarefa.dataFim)}', // Usando o formato brasileiro
+                            'Data Fim: ${formatDate(tarefa.dataFim)}',
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 4),
